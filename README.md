@@ -1,11 +1,11 @@
 # WFC
 
-A Wave Function Collapse library for Zig 0.13.0.
+A Wave Function Collapse library for Zig 0.14.0.
 
 ## Installation
 
 ```sh
-zig fetch --save https://github.com/JacobBanta/WFC/archive/c017df79b4655855dcd20f4f0b7cbf3885760e1f.tar.gz
+zig fetch --save git+https://github.com/JacobBanta/WFC
 ```
 
 Then add the following to `build.zig`:

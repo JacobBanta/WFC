@@ -4,7 +4,7 @@ pub fn create(comptime tileSet: type, comptime SIZE_X: comptime_int, comptime SI
         pub const Tile = union(enum) {
             collapsed: tileSet,
             uncollapsed: T,
-            pub const T = @Type(std.builtin.Type{ .Int = .{ .signedness = .unsigned, .bits = @typeInfo(tileSet).Enum.fields.len } });
+            pub const T = @Type(std.builtin.Type{ .int = .{ .signedness = .unsigned, .bits = @typeInfo(tileSet).@"enum".fields.len } });
         };
 
         pub fn computeWFC(board: *[SIZE_Y][SIZE_X]Tile, rand: std.Random) void {
@@ -23,7 +23,7 @@ pub fn create(comptime tileSet: type, comptime SIZE_X: comptime_int, comptime SI
         pub fn collapse(board: *[SIZE_Y][SIZE_X]Tile, x: usize, y: usize) void {
             switch (board[y][x]) {
                 .collapsed => |val| {
-                    for (0..@typeInfo(tileSet).Enum.fields.len) |n| {
+                    for (0..@typeInfo(tileSet).@"enum".fields.len) |n| {
                         if (@intFromEnum(val) == n) continue;
                         if (@intFromEnum(val) > n) {
                             collapseDistance(board, x, y, @enumFromInt(n), @intFromEnum(val) - n);
@@ -114,7 +114,7 @@ pub fn create(comptime tileSet: type, comptime SIZE_X: comptime_int, comptime SI
         }
         pub fn getEntropy(tile: Tile.T) usize {
             var bits: usize = 0;
-            for (0..@typeInfo(tileSet).Enum.fields.len) |i| {
+            for (0..@typeInfo(tileSet).@"enum".fields.len) |i| {
                 if ((tile >> @intCast(i)) & 1 == 1) {
                     bits += 1;
                 }
@@ -125,14 +125,14 @@ pub fn create(comptime tileSet: type, comptime SIZE_X: comptime_int, comptime SI
         pub fn choose(board: *[SIZE_Y][SIZE_X]Tile, x: usize, y: usize, rand: std.Random) void {
             if (board[y][x] == .collapsed) unreachable;
             var bits: usize = 0;
-            for (0..@typeInfo(tileSet).Enum.fields.len) |i| {
+            for (0..@typeInfo(tileSet).@"enum".fields.len) |i| {
                 if ((board[y][x].uncollapsed >> @intCast(i)) & 1 == 1) {
                     bits += 1;
                 }
             }
             const r = rand.uintLessThan(usize, bits);
             bits = r;
-            for (0..@typeInfo(tileSet).Enum.fields.len) |i| {
+            for (0..@typeInfo(tileSet).@"enum".fields.len) |i| {
                 if ((board[y][x].uncollapsed >> @intCast(i)) & 1 == 1) {
                     if (bits == 0) {
                         board[y][x] = Tile{ .collapsed = @enumFromInt(i) };
